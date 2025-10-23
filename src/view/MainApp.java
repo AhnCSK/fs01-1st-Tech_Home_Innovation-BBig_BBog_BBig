@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
-import Controller.MainController;
+import controller.MainController;
 
 public class MainApp {
 	public static void main(String[] args) {

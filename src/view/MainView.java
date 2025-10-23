@@ -19,6 +19,13 @@ public class MainView {
 		System.out.println("\n환영합니다! 원하시는 메뉴를 선택해주세요.\n");
 		System.out.println("  [1] 회원가입");
 		System.out.println("  [2] 로그인");
+		
+		System.out.println("  [3] mqtt테스트");
+		
+		System.out.println("  [4] led켜기");
+		
+		System.out.println("  [5] led끄기");
+		
 		System.out.println("  [9] 프로그램 종료");
 		System.out.println("\n--------------------------------------------------");
 		System.out.print("> 입력: ");

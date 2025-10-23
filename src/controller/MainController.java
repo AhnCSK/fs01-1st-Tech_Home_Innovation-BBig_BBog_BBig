@@ -1,9 +1,10 @@
-package Controller;
+package controller;
 
 import javax.swing.JOptionPane;
 
 import dto.UserDTO;
 import dto.UserSessionDTO;
+import mqtt.MqttManager;
 import service.UserService;
 import service.UserServiceImpl;
 import util.ConsoleUtils;
@@ -15,7 +16,9 @@ public class MainController {
 	// 화면을 담당하는 View 객체
 	private final MainView view = new MainView();
 	private final UserService service = new UserServiceImpl();
-//	private MqttManager mqttManager;
+	
+	
+	private MqttManager mqttManager;
 	
 	public void run() {
 		while(true) {
@@ -43,6 +46,32 @@ public class MainController {
 		case "2":
 //			login();
 			break;
+			
+			
+/*
+ * 
+ * 토픽형식 예시
+ *  pubTopic = "/home/pc/livingroom/light";
+    subTopic = "/home/rasp/#"; 
+ * 
+ * 
+ * 
+ * 
+ * */
+			
+		case "3":
+			mqttManager = new MqttManager("");
+			mqttManager.publish("home/test", "mqtt test");
+			break;
+		case "4":
+			mqttManager = new MqttManager("");
+			mqttManager.publish("home/test", "led_on");
+			break;
+		case "5":
+			mqttManager = new MqttManager("");
+			mqttManager.publish("home/test", "led_off");
+			break;
+			
 		case "9":
 //			exitProgram();
 			break;
