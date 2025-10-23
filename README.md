@@ -30,9 +30,9 @@
 ---
 | 이름 | 역할 및 담당 업무 | 개인 Git |
 |:---:|:---:|:---:|
-| <img src= "" width= "120"/> <br> **이다온** | • 콘솔 UI구현 • DB 설계 및 디자인<br>•   | [GitHub](https://github.com/DaOn1072) |
-| <img src= "" width= "130"/> <br> **노건우** | • 라즈베리파이 센서조작 • Python 데이터 연동<br>  | [GitHub]() |
-| <img src= "" width= "130" height= "120"/> <br> **안창석** | • 자바 MQTT통신구현 • 결과 발표 • 깃허브구축 및 설계 • PPT제작 <br> | [GitHub](https://github.com/AhnCSK) |
+| <img src= "https://image.economist.co.kr/data/ecn/image/2023/07/11/ecn20230711000031.600x.0.png" width= "120"/> <br> **이다온** | • 콘솔 UI구현 • DB 설계 및 디자인<br>•   | [GitHub](https://github.com/DaOn1072) |
+| <img src= "https://image.economist.co.kr/data/ecn/image/2023/07/11/ecn20230711000031.600x.0.png" width= "130"/> <br> **노건우** | • 라즈베리파이 센서조작 • Python 데이터 연동<br>  | [GitHub](https://github.com/geonwoo1226) |
+| <img src= "https://image.economist.co.kr/data/ecn/image/2023/07/11/ecn20230711000031.600x.0.png" width= "130" height= "120"/> <br> **안창석** | • 자바 MQTT통신구현 • 결과 발표 • 깃허브구축 및 설계 • PPT제작 <br> | [GitHub](https://github.com/AhnCSK) |
 
 <br>
 
