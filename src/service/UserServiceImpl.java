@@ -8,12 +8,14 @@ public class UserServiceImpl implements UserService {
 
 	private final UserDAO dao = new UserDAOImpl();
 	
+	// 회원가입 서비스
 	@Override
 	public int register(UserDTO user) {
 		int result = dao.register(user);
 		return result;
 	}
 
+	// 로그인 서비스
 	@Override
 	public UserDTO login(String id, String pass) {
 		UserDTO user = dao.login(id, pass);
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	// 외출/재택 상태 변경 서비스
 	@Override
 	public int stateUpdate(UserDTO user, String id) {
 		// DAO 호출 → 반환값은 영향을 받은 행(row) 수
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 
-	// 유저 정보 수정
+	// 유저 정보 수정 서비스
 	@Override
 	public int updateUserInfo(UserDTO user, UserDTO updatedUser) {
 		

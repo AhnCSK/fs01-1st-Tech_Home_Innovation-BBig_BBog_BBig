@@ -1,4 +1,4 @@
-package service;
+package mqtt;
 
 public interface MqttPubSubService {
 	

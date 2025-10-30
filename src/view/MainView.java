@@ -48,15 +48,18 @@ public class MainView {
 		System.out.print("이름: ");
 		newUser.setName(scanner.next());
 
+		// 입력한 비밀번호 재확인
 		while (true) {
 			System.out.print("비밀번호: ");
 			String password = scanner.next();
 			System.out.print("비밀번호 확인: ");
 			String passwordConfirm = scanner.next();
 
+			// 비밀번호가 일치하면 newUser에 set
 			if (password.equals(passwordConfirm)) {
 				newUser.setPass(passwordConfirm);
 				break;
+			// 틀리면 비밀번호 재입력
 			} else {
 				JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 			}
@@ -87,7 +90,8 @@ public class MainView {
 
 		return newUser;
 	}
-	// 로그인 뷰
+	
+	// 로그인 뷰 LoginUserDTO 객체로 반환
 	public LoginUserDTO handleLogin() {
 		System.out.println();
 		System.out.println("╔════════════════════════════════════════════════════╗");
@@ -130,17 +134,17 @@ public class MainView {
 		return scanner.nextLine();
 	}
 
-	// 관리자 메인 메뉴
+	// 관리자 메인 메뉴   (유저 정보를 담고 있는 UserDTO를 가져옴)
 	public String adminMainMenu(UserDTO userDTO) {
 		System.out.println();
 		System.out.println("╔════════════════════════════════════════════════════════════════╗");
 		System.out.println("           🖥  테크 홈 이노베이션 - 삑뽁삑 (BBig BBog BBig)  🖥");
 		System.out.println("╚════════════════════════════════════════════════════════════════╝");
 		System.out.println();
-		System.out.printf("관리자 %s님, 환영합니다!   현재 상태: %s 중입니다.\n", 
-				userDTO.getUserId(), userDTO.getState());
+		System.out.printf("관리자 %s님, 환영합니다!  ", 
+				userDTO.getUserId());
 		System.out.println();
-		System.out.println("   [1] 사용자 정보 조회 📊");
+		System.out.println("   [1] 입주민 정보 조회 📊");
 		System.out.println("   [2] 아파트 게시판 🏢");
 		System.out.println("   [3] 경고 수신함 ⚠️");
 		System.out.println("   [4] 로그아웃 🔓");

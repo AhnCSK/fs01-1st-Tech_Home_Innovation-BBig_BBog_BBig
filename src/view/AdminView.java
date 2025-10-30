@@ -3,12 +3,11 @@ package view;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import dto.NoticeDTO;
 import dto.UserDTO;
 import dto.WarningDTO;
 
+// admin으로 로그인했을 경우 출력 화면
 public class AdminView {
 	private static final Scanner scanner = new Scanner(System.in);
 
@@ -34,27 +33,23 @@ public class AdminView {
 	}
 
 	// 경고 수신함
-	public void viewWarning(List<WarningDTO> warningList) {
+	public void getAllWarning(List<WarningDTO> warningList) {
 		System.out.println();
 		System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
 		System.out.println("                     ⚠️  경고 수신함 ⚠️");
 		System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
 		System.out.println();
-		System.out.printf("%-5s | %-10s | %-8s | %-8s | %-20s | %-20s | %-20s\n",
-		        "Room", "입주민ID", "감지센서", "경고타입", "내용", "연락처", "발생날짜");
+		System.out.printf("%-5s | %-10s | %-8s | %-20s | %-20s | %-20s\n", "Room", "입주민ID", "경고타입", "내용", "연락처",
+				"발생날짜");
 		System.out.println("-------------------------------------------------------------------------------");
 
 		for (WarningDTO notice : warningList) {
-		    System.out.printf("%-5d | %-10s | %-8s | %-8s | %-20s | %-20s | %-20s\n",
-		            notice.getRoom_id(),
-		            notice.getUser_id(),
-		            notice.getSensor(),
-		            notice.getWarningType(),
-		            notice.getMessage(),
-		            notice.getPhoneNumber(),
-		            notice.getDate()
-		    );
+			System.out.printf("%-5d | %-10s | %-8s | %-20s | %-20s | %-20s\n", notice.getRoom_id(), notice.getUser_id(),
+					notice.getWarningType(), notice.getMessage(), notice.getPhoneNumber(), notice.getDate());
+			
+			System.out.println("-----------------------------------------------------------------------------------------------------------");
 		}
+		
 
 		System.out.println("============================================================");
 		System.out.print("경고함 나가기 >>>> ");
@@ -86,5 +81,35 @@ public class AdminView {
 		System.out.print("게시판 나가기 >>>> ");
 		scanner.nextLine();
 
+	}
+
+	// 관리자용 민원 게시글만 조회
+	public void getAllPostsComplaint(List<NoticeDTO> complaintList, UserDTO user) {
+		System.out.println();
+		System.out.println("╔════════════════════════════════════════════════════╗");
+		System.out.printf("                  📩 수신된 민원 📩\n");
+		System.out.println("╚════════════════════════════════════════════════════╝");
+
+		System.out.println("번호\t | 카테고리 | 제목 \t \t| 내용 \t \t| 작성날짜 \t |");
+		System.out.println("-------------------------------------------------------------------------------");
+		int size = complaintList.size();
+
+		if (size > 0) {
+			for (int i = 0; i < size; i++) {
+				NoticeDTO post = complaintList.get(i);
+				System.out.print(post.getNoticeId() + "\t | ");
+				System.out.print(post.getTitle() + "\t | ");
+				System.out.print(post.getType() + "\t | ");
+				System.out.print(post.getPost() + "\t | ");
+				System.out.print(post.getPostDate() + "\t | ");
+				System.out.println();
+				System.out.println("\n------------------------------------------------------------------------");
+			}
+		} else {
+			System.out.println("           작성된 게시글이 없습니다");
+		}
+		System.out.println("────────────────────────────────────────────────────");
+		System.out.print("게시판 나가기 >>>>");
+		scanner.nextLine();
 	}
 }
