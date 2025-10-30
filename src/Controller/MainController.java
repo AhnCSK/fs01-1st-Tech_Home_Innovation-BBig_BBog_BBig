@@ -6,24 +6,21 @@ import javax.swing.JOptionPane;
 
 import dao.UserDAO;
 import dao.UserDAOImpl;
+import dao.WarningDAO;
+import dao.WarningDAOImpl;
 import dto.LoginUserDTO;
 import dto.NoticeDTO;
 import dto.UserDTO;
 import dto.UserSessionDTO;
 import dto.WarningDTO;
-import mqtt.MqttManager;
+import mqtt.MqttPubSubServiceImpl;
 import service.AdminService;
-
-import service.MqttPubSubService;
-import service.MqttPubSubServiceImpl;
 import service.NoticeService;
 import service.NoticeServiceImpl;
 import service.SensorService;
 import service.SensorServiceImpl;
 import service.UserService;
 import service.UserServiceImpl;
-import service.WarningService;
-import service.WarningServiceImpl;
 import util.ConsoleUtils;
 import view.AdminView;
 import view.DetailView;
@@ -32,114 +29,112 @@ import view.MainView;
 public class MainController {
 	// 현재 로그인한 사용자 정보
 	private UserSessionDTO currentUser = null;
+
 	// 메인 화면
 	private final MainView view = new MainView();
-	// 공지 관련
-	private NoticeService noticeService;
-	private DetailView detailView;
+
 	// 관리자 화면
 	private final AdminView adminView = new AdminView();
-	private final UserService service = new UserServiceImpl();
 	private AdminService adminService;
-	private MqttManager mqttManager;
-	
-	
-	//MQTT서브 퍼브
-	private MqttPubSubService mqttpubsub= new MqttPubSubServiceImpl();
+
+	// 상세 화면
+	private DetailView detailView;
+
+	// 공지 관련
+	private NoticeService noticeService;
+	private UserService service = new UserServiceImpl();
+
+	// mqtt
+	private MqttPubSubServiceImpl mqttpubsub;
 
 	// 기본 생성자
 	public MainController() {
-		this.noticeService = new NoticeServiceImpl(); // ① 먼저 서비스 생성
-		this.detailView = new DetailView(this.noticeService); // ② 그 서비스로 뷰 연결
+		// 서비스 생성 -> 서비스로 뷰
+		this.noticeService = new NoticeServiceImpl();
+		this.detailView = new DetailView(this.noticeService);
 	}
 
-	// 다른 생성자 (필요하다면 유지)
 	public MainController(AdminService adminService) {
-		this(); // 기본 생성자 호출해서 위 두 개 먼저 초기화
+		this();
+		// 기본 생성자 호출로 초기화
 		this.adminService = adminService;
 	}
-	
 
+	// 컨트롤 실행
 	public void run() {
 		while (true) {
+			// 로그인이 되지 않았을 경우
 			if (currentUser == null) {
-				// 로그인되지 않았을 때의 로직 처리
 				handleInitialMenu();
 			} else {
-				// 로그인된 후의 로직 처리
+				// 로그인 됐을 경우
 				handleMainMenu();
-				System.out.println("로그인");
 			}
 		}
 	}
 
+// --------------------(실행)-----------------------
+
 	// 로그인 되지 않았을 때 로직
-	// 1번 로그인 2번 회원가입 9번 로그아웃 출력
 	private void handleInitialMenu() {
 		ConsoleUtils.clearConsole();
-		// view는 메뉴를 보여주고 입력만 받아서 전달
+		// 유저가 선택한 값을 받음
 		String choice = view.showInitialMenu();
 		switch (choice) {
 		case "1":
+			// 회원가입
 			register();
 			break;
 		case "2":
+			// 로그인
 			login();
 			break;
-
 		case "9":
+			// 프로그램 종료
 			exitProgram();
 			break;
 		default:
-//			view.showMessage("(!) 잘못된 입력입니다.");
-
+			JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 		}
-
 	}
 
 	// 회원가입
 	private void register() {
-		// 콘솔창 클리어
 		ConsoleUtils.clearConsole();
-		// View에 현재 사용자 이름을 넘겨주어 메뉴를 보여줌
+
+		// 회원가입 뷰에서 사용자가 입력한 데이터를 UserDTO에서 받음
 		UserDTO user = view.showRegistrationForm();
 		int result = service.register(user);
-		
 
 		new Thread(() -> {
 			if (result == 1) {
-			    JOptionPane.showMessageDialog(null, "회원가입이 성공했습니다.");
+				JOptionPane.showMessageDialog(null, "회원가입이 성공했습니다.");
 			} else if (result == 0) {
-			    JOptionPane.showMessageDialog(null, "회원가입이 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "회원가입이 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
 			} else if (result == -1) {
-			    JOptionPane.showMessageDialog(null, "존재하지 않는 동/호실 입니다.");
+				JOptionPane.showMessageDialog(null, "존재하지 않는 동/호실 입니다.");
 			}
-		}).start(); // 스레드 시작
+		}).start();
 	}
 
 	// 로그인
 	private void login() {
 		ConsoleUtils.clearConsole();
 
-		// 사용자 입력값 가져오기
+		// 유저가 입력한 값 받음
 		LoginUserDTO loginUser = view.handleLogin();
 
-		// (id, pass)로 사용자 확인 성공 시 UserDTO 반환
+		// service.login()에서 DB를 조회해서 일치하는 유저 정보를 반환
 		UserDTO loginSuccessUser = service.login(loginUser.getUserId(), loginUser.getPass());
 
-		// 로그인 성공하면 세션에 로그인 사용자 정보를 담고,
-		// Mqtt Subscriber를 실행함
 		if (loginSuccessUser != null) {
-			// 현재 사용자 정보 저장
-
+			// 현재 로그인한 사용자 정보를 세션 객체에 저장
 			currentUser = new UserSessionDTO(loginSuccessUser);
-			System.out.println("\n MQTT 서비스에 연결을 시작합니다.");
 
+			// mqtt Subscriber 실행
+			startMqttSubscriber(loginSuccessUser);
 
-			 // 로그인 후 MQTT 구독 스레드 시작
-	        startMqttSubscriber(loginSuccessUser);
-
-			// 만약 로그인한 user_id가 admin일 경우
+			// userId로 관리자/유저 구분
 			if ("admin".equals(loginSuccessUser.getUserId())) {
 				JOptionPane.showMessageDialog(null, "관리자로 로그인했습니다.");
 				adminMainMenu();
@@ -147,32 +142,28 @@ public class MainController {
 				JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.");
 				handleMainMenu();
 			}
-//	        asub.subscribe();
 		} else {
 			JOptionPane.showMessageDialog(null, "로그인 실패");
 			login();
 		}
-
 	}
 
-	// 로그인 후 MQTT 구독 스레드 시작
-    private void startMqttSubscriber(UserDTO user) {
-        new Thread(() -> {
-            try {
-                // 🔹 MQTT 서비스 생성: 로그인 사용자 기준 구독
-                MqttPubSubServiceImpl pubsub = new MqttPubSubServiceImpl(user);
+	// 로그인 유저 정보를 받아, 해당 사용자에 맞는 mqtt 구독 시작
+	private void startMqttSubscriber(UserDTO user) {
+		mqttpubsub = new MqttPubSubServiceImpl(user);
 
-                // 🔹 메시지는 콜백에서 팝업 처리
-                // 실제 pubsub 클래스에서 messageArrived()가 자동 호출됨
-                // 스레드는 종료되지 않도록 유지
-                while (true) {
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+		// MQTT 구독 서비스를 지속적으로 유지
+		new Thread(() -> {
+			try {
+				while (true)
+					Thread.sleep(1000); // 스레드 유지
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+
+// --------------------(관리자 로그인)-----------------------
 
 	// 관리자 메뉴
 	private void adminMainMenu() {
@@ -180,243 +171,266 @@ public class MainController {
 			ConsoleUtils.clearConsole();
 			String choice = view.adminMainMenu(currentUser.getLoginUser());
 			switch (choice) {
-			case "1": // 빌딩 사용자 정보 조회
+			case "1":
+				// 입주민 정보 조회
 				handleListResidents();
 				break;
-			case "2": // 아파트 소통 게시판
+			case "2":
+				// 아파트 게시판 기능
 				noticeBoard();
 				break;
 			case "3":
+				// 경고 수신함 조회
 				handleListWarning();
-				view.showMessage("경고 수신함");
 				break;
 			case "4":
-				view.showMessage("로그아웃");
-				currentUser = null;
-				JOptionPane.showMessageDialog(null, "로그아웃 됐습니다.");
-				// 5️ 연결 종료
-				run();
-				mqttManager.close();
-
-
-				break;
+				logout();
+				return;
+			default:
+				JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 			}
 		}
 	}
 
-	private void handleListWarning() {
-		ConsoleUtils.clearConsole();
-		
-		WarningService warningService = new WarningServiceImpl();
-		List<WarningDTO> warningList = warningService.viewWarning(0, 0, null, null, null);
-		
-		adminView.viewWarning(warningList);
-	}
-
-	// 관리자 1번 - 관리자가 입주민 정보를 확인
+	// 1번 (관리자) 입주민 정보 조회
 	private void handleListResidents() {
 		ConsoleUtils.clearConsole();
-
 		List<UserDTO> residents = adminService.getResidentList(currentUser.getLoginUser());
-
 		adminView.showResidentList(residents);
 	}
 
-	// 로그인 성공 시 실행
-	private void handleMainMenu() {
-		ConsoleUtils.clearConsole();
-		// View에 현재 사용자 이름을 넘겨주어 메뉴를 보여주게 함
-		String choice = view.showMainMenu(currentUser.getLoginUser());
-		switch (choice) {
-		case "1":
-			handleSensorMenu();
-			System.out.println("센서");
-			break;
-		case "2":
-			showInfo();
-			break;
-		case "3":
-			userInfoUpdate();
-			view.showMessage("사용자 정보 수정 메뉴입니다.");
-			break;
-		case "4":
-			noticeBoard();
-			view.showMessage("아파트 게시판입니다.");
-
-			break;
-		case "5":
-			handleStateUpdate();
-			view.showMessage("외출 상태 변환 메뉴입니다");
-
-			break;
-		case "6":
-			view.showMessage("로그아웃");
-			currentUser = null;
-			JOptionPane.showMessageDialog(null, "로그아웃 됐습니다.");
-			run();
-			break;
-		}
-	}
-
-	// 아파트 커뮤니티 게시판
+	// 2번 아파트 게시판
 	public void noticeBoard() {
 		ConsoleUtils.clearConsole();
-		UserDAO dao = new UserDAOImpl();
 		UserDTO user = currentUser.getLoginUser();
-
-		NoticeService noticeService = new NoticeServiceImpl();
+		
+		// 모든 게시글
 		List<NoticeDTO> noticeList = noticeService.getAllPosts();
+		// 자신이 작성한 게시글
 		List<NoticeDTO> postMyList = noticeService.getPostById(user.getUserId());
+		// 관리자의 모든 게시글 조회
 		List<NoticeDTO> noticeAdmin = noticeService.getAllPostsAdmin();
+		// 관리자 전용 민원 수신
+		List<NoticeDTO> complaintList = noticeService.getComplaint();
 
+		// 사용자가 선택한 값을 받아옴
 		int choice = detailView.noticeMenu(user);
-
 		switch (choice) {
 		case 1:
-			detailView.writePost(user); // 게시글 작성
+			// 게시글 작성
+			detailView.writePost(user);
 			JOptionPane.showMessageDialog(null, "게시글이 작성됐습니다.");
+			// 작성 후 이전 메뉴로 돌아감
 			noticeBoard();
 			break;
 		case 2:
+			// 게시글 조회 
+			// (관리자) 관리자 전용 뷰 / (유저) 유저 전용 뷰 구분
 			if ("admin".equals(user.getUserId())) {
 				adminView.viewPostAdmin(noticeAdmin);
-				break;
 			} else {
-				detailView.viewPost(noticeList); // 게시글 조회
-				noticeBoard();
-				break;
+				detailView.viewPost(noticeList);
 			}
+			noticeBoard();
+			break;
 		case 3:
-			detailView.getPostById(postMyList, user); // 자신이 작성한 게시글 조회
+			// 로그인한 user가 작성한 게시글 조회
+			detailView.getPostById(postMyList, user);
 			noticeBoard();
 			break;
 		case 4:
-			if("admin".equals(user.getUserId())) {
-				adminMainMenu();
+			// 관리자 전용 민원 조회 
+			if ("admin".equals(user.getUserId())) {
+				adminView.getAllPostsComplaint(complaintList, user);
+				noticeBoard();
 				break;
+			}else {
+				JOptionPane.showMessageDialog(null, "권한이 없습니다.");
+				System.out.println("권한이 없습니다.");
 			}
-			handleMainMenu();
+		case 5:
+			// 이전 메뉴로 돌아가기
+			// 관리자와 유저의 메인 뷰가 다르므로 구분
+			if ("admin".equals(user.getUserId()))
+				adminMainMenu();
+			else
+				handleMainMenu();
 			break;
+		default:
+			JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 		}
-
 	}
 
-	private void handleStateUpdate() {
-		UserDAO dao = new UserDAOImpl();
+	// 3번 (관리자) 경고 수신함 조회
+	private void handleListWarning() {
+		ConsoleUtils.clearConsole();
+
+		WarningDAO warningService = new WarningDAOImpl();
+		List<WarningDTO> warningList = warningService.getAllWarning();
+
+		adminView.getAllWarning(warningList);
+	}
+
+// ------------------------(유저 로그인)---------------------------------------	
+
+	// 로그인 성공 시 메인 메뉴
+	private void handleMainMenu() {
+		ConsoleUtils.clearConsole();
+		String choice = view.showMainMenu(currentUser.getLoginUser());
+		switch (choice) {
+		case "1":
+			// 장치 제어
+			handleSensorMenu();
+			break;
+		case "2":
+			// 로그인한 유저 정보 조회
+			showInfo();
+			break;
+		case "3":
+			// 로그인한 유저 정보 수정
+			userInfoUpdate();
+			break;
+		case "4":
+			// 아파트 게시판
+			noticeBoard();
+			break;
+		case "5":
+			// 로그인한 유저 상태(외출/재택) 변경
+			handleStateUpdate();
+			break;
+		case "6":
+			logout();
+			break;
+		default:
+			JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
+		}
+	}
+
+	// 1번 장치 제어
+	private void handleSensorMenu() {
 		UserDTO user = currentUser.getLoginUser();
 
-		String choice = detailView.stateUpdate(user);
-		String newState = null;
-		
-		//라즈베리로 보내고자하는 유저의 테이블 데이터들가져오기
-		String userState=user.getState();
-		int userBuilding=user.getBuilding();
-		String userRoomNum=user.getRoomNum();
-		
-		//System.err.println(userState+"/"+userBuilding+"/"+userRoomNum);
-		
-		//테스트 토픽
-		String pubTopic ="/home/";
-	
-		//셀제사용 토픽
-		//String pubTopic = "/"+userBuilding+"/"+userRoomNum+"/";
-		
+		// 장치 제어 메뉴 루프 (위치 선택)
+		while (true) {
+			// 유저가 제어할 위치를 선택
+			String selecteRoom = detailView.selectLocation(user);
 
+			// '이전 메뉴'를 선택하면 return으로 이전으로 돌아감
+			if ("PREV_MENU".equals(selecteRoom))
+				return;
+
+			SensorService sensorService = new SensorServiceImpl();
+
+			// 선택한 위치에 설치된 장치 목록 가져옴
+			List<String> sensorList = sensorService.getSensorByRoom(selecteRoom);
+
+			// 값이 없으면 선택 단계로 돌아감
+			if (sensorList == null || sensorList.isEmpty())
+				continue;
+
+			// 장치 제어 메뉴 루프 (위치 -> 장치 선택)
+			while (true) {
+				String selectedSensor = detailView.selectSensorType(selecteRoom, sensorList);
+
+				// '이전 메뉴' 선택하면 break로 빠져나와 위치 선택 단계로 돌아감
+				if ("PREV_MENU".equals(selectedSensor))
+					break;
+
+				// 선택한 장치에 대해 on/off 동작 선택
+				String action = detailView.onOffMenu(selectedSensor);
+
+				// '이전 메뉴' 선택하면 장치 선택 단계로 돌아감
+				if ("PREV_MENU".equals(action))
+					continue;
+
+				SensorControl sensor = new SensorControl(user);
+
+				// 로그인한 유저의 동/호수, 유저가 선택한 센서종류 및 동작상태를 전달하여 constrol 실행
+				sensor.control(user.getBuilding(), user.getRoomNum(), selectedSensor, action, selecteRoom);
+			}
+		}
+	}
+
+	// 로그인한 유저 정보 조회
+	private void showInfo() {
+		if (currentUser != null) {
+			// 화면에 한 번만 출력하는 용도 이기 때문에 UserDTO 지역 변수를 만들지 않음
+			detailView.showUserInfo(currentUser.getLoginUser());
+		} else {
+			System.out.println("로그인된 사용자가 없습니다.");
+		}
+	}
+
+	// 로그인한 유저 정보 수정
+	private void userInfoUpdate() {
+		// 로그인한 유저 정보를 받음
+		UserDTO user = currentUser.getLoginUser();
+		// 사용자가 새롭게 입력한 유저 정보를 받음
+		UserDTO updatedUser = detailView.userInfoUpdate(user);
+
+		if (updatedUser != null) {
+			// 정보 업데이트 수행
+			service.updateUserInfo(user, updatedUser);
+			JOptionPane.showMessageDialog(null, "사용자 정보가 수정됐습니다.");
+		} else {
+			JOptionPane.showMessageDialog(null, "수정이 취소됐습니다.");
+		}
+	}
+
+	// 3번 아파트 게시판 기능은 admin 로그인 코드 쪽에 배치
+
+	// 4번 로그인한 유저의 외출/재택 상태 변환
+	private void handleStateUpdate() {
+
+		// DB 접근을 위한 DAO 객체 생성
+		UserDAO dao = new UserDAOImpl();
+		// 현재 로그인한 사용자 정보 받음
+
+		// 유저가 선택한 외출/재택 값을 받음
+		UserDTO user = currentUser.getLoginUser();
+		String choice = detailView.stateUpdate(user);
+
+		String newState = null;
+
+		// MQTT Publish를 위한 기본 토픽
+		String pubTopic = "home/"+user.getBuilding()+"/"+user.getRoomNum();
+
+		// 사용자의 선택에 따라 상태 및 MQTT 메시지 처리
 		if ("1".equals(choice)) {
+			// 외출 선택
 			newState = "Away";
 			mqttpubsub.publish(pubTopic, "security_on");
 		} else if ("2".equals(choice)) {
 			newState = "Home";
+			// 재택 선택
 			mqttpubsub.publish(pubTopic, "security_off");
 		} else {
-			System.out.println("잘못된 값을 입력했습니다.");
+			JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 			return;
 		}
 
-		// 1) DB 반영
+		// DB에 사용자 상태 업데이트
 		dao.stateUpdate(user, newState);
-
-		// 2) DTO에도 반영
+		// 현재 로그인한 사용자 객체도 변경 상태 반영
 		user.setState(newState);
-
-		System.out.println("현재 상태: " + user.getState());
-		JOptionPane.showMessageDialog(null, "변경 됐습니다.");
+		JOptionPane.showMessageDialog(null, newState + "상태로 변경 됐습니다.");
 	}
 
-	private void userInfoUpdate() {
-		UserDAO dao = new UserDAOImpl();
-		UserDTO user = currentUser.getLoginUser();
-
-		UserDTO updatedUser = detailView.userInfoUpdate(user);
-
-		if (updatedUser != null) {
-			service.updateUserInfo(user, updatedUser); // Service에 전달 → DB 반영
-			JOptionPane.showMessageDialog(null, "사용자 정보가 수정됐습니다.");
-		} else {
-			JOptionPane.showMessageDialog(null, "비밀번호가 맞지 않아 수정이 취소됐습니다.");
-		}
-
-	}
-
-	private void handleSensorMenu() {
-		// 로그인된 유저 데이터 넘기기
-		UserDTO user = currentUser.getLoginUser();
-
-		while (true) {
-			// 장소 선택 -> DetailView에서 입력받음
-			String selecteRoom = detailView.selectLocation(user);
-			if ("PREV_MENU".equals(selecteRoom)) {
-				return;
-			}
-			// 센서 목록 가져오기
-			SensorService sensorService = new SensorServiceImpl();
-
-			List<String> sensorList = sensorService.getSensorByRoom(selecteRoom);
-			if (sensorList == null || sensorList.isEmpty()) {
-				System.out.println("해당 방에는 센서가 없습니다.");
-				continue; // 다시 방 선택
-			}
-
-			while (true) {
-				// 센서 선택
-				String selectedSensor = detailView.selectSensorType(selecteRoom, sensorList);
-				if ("PREV_MENU".equals(selectedSensor)) {
-					break;
-				}
-
-				// 센서 제어 (on/off 결과 받음)
-				String action = detailView.onOffMenu(selectedSensor);
-				if ("PREV_MENU".equals(action))
-					continue; // 이전 메뉴 선택시 센서 선택으로 돌아감
-
-				System.out.println("test");
-				// 센서 컨트롤 (유저 동/호수, 제어 센서, on/off)
-				SensorControl sensor = new SensorControl(user);
-
-				// 센서 종류 선택
-				sensor.control(user.getBuilding(), user.getRoomNum(), selectedSensor, action, selecteRoom);
-
-				break;
-			}
-		}
-	}
-
-	private void showInfo() {
-		if (currentUser == null) {
-			System.out.println("로그인된 사용자가 없습니다.");
-			return;
-		}
-
-		UserDTO user = currentUser.getLoginUser();
-
-		detailView.showUserInfo(user);
-	}
-
+	
 	// 로그아웃
+	private void logout() {
+		currentUser = null;
+		if (mqttpubsub != null)
+			// MQTT 구독/발행 서비스 실행중이면 리소스 해제
+			mqttpubsub.close();
+		JOptionPane.showMessageDialog(null, "로그아웃 됐습니다.");
+		run();
+	}
+	
+	// 프로그램 종료
 	private void exitProgram() {
 		ConsoleUtils.clearConsole();
 		JOptionPane.showMessageDialog(null, "프로그램을 종료합니다.");
 		MainView.exitProgram();
 	}
-
 }

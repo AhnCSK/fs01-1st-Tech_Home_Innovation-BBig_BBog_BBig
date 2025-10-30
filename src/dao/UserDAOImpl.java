@@ -118,6 +118,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	// 로그인 메소드
+	// room_id로 Room 테이블과 User 테이블을 JOIN하여 동/호수 데이터를 함께 조회
 	@Override
 	public UserDTO login(String id, String pass) {
 		Connection con = null;
@@ -182,10 +183,12 @@ public class UserDAOImpl implements UserDAO {
 		return rs;
 	}
 
+	// (관리자 전용) 입주민 정보를 조회
 	@Override
 	public List<UserDTO> getAllUsers(UserDTO userDTO) {
 		List<UserDTO> users = new ArrayList<>();
 		
+		// 입주민 목록에 관리자를 제외해서 조회
 		String sql = "SELECT u.user_id, u.name, u.phone_number, u.state, r.building, r.room_num "
 				+ "FROM user u LEFT JOIN room r ON u.room_id = r.room_id WHERE user_id <> ?";
 		Connection con = null;

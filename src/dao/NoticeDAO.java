@@ -18,6 +18,9 @@ public interface NoticeDAO {
 	// (관리자) 게시글 목록 조회
 	List<NoticeDTO> getAllPostsAdmin();
 
+	// (관리자) 민원 게시글 목록 조회
+	List<NoticeDTO> getAllPostsComplaint();
+
 
 	
 }

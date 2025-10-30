@@ -13,6 +13,7 @@ public class AdminServiceImpl implements AdminService {
 		this.userDAO = userDAO;
 	}
 
+	// 입주민 리스트
 	@Override
 	public List<UserDTO> getResidentList(UserDTO userDTO) {
 		

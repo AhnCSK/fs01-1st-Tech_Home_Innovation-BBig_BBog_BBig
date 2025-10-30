@@ -10,6 +10,8 @@ import dto.NoticeDTO;
 import dto.UserDTO;
 import service.NoticeService;
 
+
+// 유저 로그인 출력 화면
 public class DetailView {
 	private static final Scanner scanner = new Scanner(System.in);
 	private NoticeService noticeService;
@@ -23,7 +25,7 @@ public class DetailView {
 		this.noticeService = noticeService;
 	}
 
-	// 1️⃣ 제어할 방 선택
+	// 1. 장치제어 - 제어할 방 선택
 	public String selectLocation(UserDTO user) {
 		while (true) {
 			System.out.println();
@@ -53,17 +55,18 @@ public class DetailView {
 			case "5":
 				return "PREV_MENU";
 			default:
-				System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
+				JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 			}
 		}
 	}
 
-	// 2️⃣ 센서 종류 선택
+	// 1-1. 장치 종류 선택
+	// 이전 메뉴에서 선택한 room 데이터와, room마다 생성된 센서 리스트를 불러옴
 	public String selectSensorType(String selectedRoom, List<String> sensors) {
 		while (true) {
 			System.out.println();
 			System.out.println("╔════════════════════════════════════════════════════╗");
-			System.out.printf("         %s 센서 제어 시스템%n", selectedRoom);
+			System.out.printf("         %s 장치 제어 시스템%n", selectedRoom);
 			System.out.println("╚════════════════════════════════════════════════════╝");
 			for (int i = 0; i < sensors.size(); i++) {
 				System.out.printf("   [%d] %s%n", i + 1, sensors.get(i));
@@ -86,12 +89,13 @@ public class DetailView {
 		}
 	}
 
-	// 3️⃣ ON/OFF 제어 메뉴
+	// 1-2 장치 ON/OFF 제어 메뉴
+	// 이전 메뉴에서 선택한 장치를 가져옴
 	public String onOffMenu(String selectedSensor) {
 		while (true) {
 			System.out.println();
 			System.out.println("╔════════════════════════════════════════════════════╗");
-			System.out.printf("        %s 센서 제어 시스템%n", selectedSensor);
+			System.out.printf("        %s 장치 제어 시스템%n", selectedSensor);
 			System.out.println("╚════════════════════════════════════════════════════╝");
 			System.out.println("   [1] ON");
 			System.out.println("   [2] OFF");
@@ -108,12 +112,12 @@ public class DetailView {
 			case "3":
 				return "PREV_MENU";
 			default:
-				System.out.println("잘못 입력했습니다. 다시 시도하세요.");
+				JOptionPane.showMessageDialog(null, "잘못된 값을 입력했습니다.");
 			}
 		}
 	}
 
-	// 4️⃣ 사용자 정보 조회
+	// 2. 사용자 정보 조회
 	public void showUserInfo(UserDTO user) {
 		String message = "=== 내 정보 조회 ===\n" + "아이디: " + user.getUserId() + "\n" + "이름: " + user.getName() + "\n"
 				+ "전화번호: " + user.getPhoneNumber() + "\n" + "상태: " + user.getState() + "\n" + "건물: "
@@ -121,7 +125,7 @@ public class DetailView {
 		JOptionPane.showMessageDialog(null, message, "내 정보", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	// 5️⃣ 사용자 정보 수정
+	// 3. 사용자 정보 수정
 	public UserDTO userInfoUpdate(UserDTO user) {
 		System.out.println();
 		System.out.println("╔════════════════════════════════════════════════════╗");
@@ -131,6 +135,7 @@ public class DetailView {
 		System.out.print("현재 비밀번호를 입력하세요: ");
 		String password = scanner.next();
 
+		// 정보 수정 전 현재 비밀번호를 확인
 		if (!password.equals(user.getPass())) {
 			JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 			return null;
@@ -141,6 +146,7 @@ public class DetailView {
 		System.out.print("새 비밀번호 확인: ");
 		String confirmPass = scanner.next();
 
+		// 변경할 비밀번호 재확인
 		if (!newPass.equals(confirmPass)) {
 			JOptionPane.showMessageDialog(null, "비밀번호 확인이 일치하지 않습니다.");
 			return null;
@@ -151,6 +157,7 @@ public class DetailView {
 		System.out.printf("새 전화번호 (현재: %s): ", user.getPhoneNumber());
 		String newPhone = scanner.next().replaceAll("[^0-9]", "");
 
+		// 전화번호 (-) 상관없이 입력받음
 		if (newPhone.length() == 11)
 			newPhone = newPhone.substring(0, 3) + "-" + newPhone.substring(3, 7) + "-" + newPhone.substring(7);
 
@@ -160,32 +167,38 @@ public class DetailView {
 
 		System.out.println("────────────────────────────────────────────────────");
 		System.out.println("✅ 정보가 성공적으로 수정되었습니다.");
+		
+		// 입력받은 값 return
 		return user;
 	}
 
-	// 6️⃣ 게시판 메뉴
+	// 4. 게시판 메뉴
 	public int noticeMenu(UserDTO user) {
 		System.out.println();
 		System.out.println("╔════════════════════════════════════════════════════╗");
 		System.out.println("              🏢 아파트 게시판 🏢");
 		System.out.println("╚════════════════════════════════════════════════════╝");
 
+		// 관리자로 로그인 했을 경우 출력화면
 		if ("admin".equals(user.getUserId())) {
 			System.out.println("   [1] 공지사항 작성");
 			System.out.println("   [2] 게시글 목록 보기");
 			System.out.println("   [3] 작성한 공지사항 보기");
-		} else {
+			System.out.println("   [4] 수신된 민원 보기");
+		} 
+		// 일반 유저로 로그인 했을 경우 출력화면
+		else {
 			System.out.println("   [1] 게시글 작성");
 			System.out.println("   [2] 게시글 목록 보기");
 			System.out.println("   [3] 내가 작성한 글 보기");
 		}
-		System.out.println("   [4] 이전 메뉴로 돌아가기");
+		System.out.println("   [5] 이전 메뉴로 돌아가기");
 		System.out.println("────────────────────────────────────────────────────");
 		System.out.print("> 입력: ");
 		return scanner.nextInt();
 	}
 
-	// 7️⃣ 게시글 작성
+	// 4-1. 게시글 작성
 	public int writePost(UserDTO user) {
 		if (scanner.hasNextLine())
 			scanner.nextLine();
@@ -195,9 +208,11 @@ public class DetailView {
 		System.out.println("               📝 게시글 작성 📝");
 		System.out.println("╚════════════════════════════════════════════════════╝");
 
+		// 관리자로 로그인했을 경우 공지사항만 작성 가능
 		if ("admin".equals(user.getUserId()))
 			System.out.println("   [3] 공지사항");
 		else {
+			// 일반 유저로 로그인했을 경우 민원/소통만 작성 가능
 			System.out.println("   [1] 민원");
 			System.out.println("   [2] 소통");
 		}
@@ -231,7 +246,7 @@ public class DetailView {
 		return noticeService.writePost(user, notice);
 	}
 
-	// 8️⃣ 전체 게시글 보기
+	// 4-2. 전체 게시글 보기
 	public void viewPost(List<NoticeDTO> noticeList) {
 		scanner.nextLine();
 		System.out.println();
@@ -257,7 +272,7 @@ public class DetailView {
 		scanner.nextLine();
 	}
 
-	// 9️⃣ 내가 작성한 게시글 보기
+	// 4-3. 내가 작성한 게시글 보기
 	public void getPostById(List<NoticeDTO> postList, UserDTO user) {
 		scanner.nextLine();
 		System.out.println();
@@ -289,7 +304,7 @@ public class DetailView {
 		scanner.nextLine();
 	}
 
-	// 🔟 외출/재택 상태 변경
+	// 5. 외출/재택 상태 변경
 	public String stateUpdate(UserDTO user) {
 		System.out.println();
 		System.out.println("╔════════════════════════════════════════════════════╗");

@@ -44,7 +44,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 		
 	}
 
-	// 유저 로그인 ->> 카테고리가 민원인 것을 제외한 모든 게시글 목록 조회
+	// 유저 로그인 ->> 카테고리가 민원인 것을 제외한 모든 게시글 목록 조회 (소통/공지만 조회)
 	@Override
 	public List<NoticeDTO> getAllPosts() {
 		String sql = "select * from notice where type <> '민원' order by post_date";
@@ -73,6 +73,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 		return boardlist;
 	}
 
+	// 자신이 작성한 게시글 조회
 	@Override
 	public List<NoticeDTO> getPostById(String id) {
 		String sql = "select * from notice where user_id = ? order by post_date";
@@ -112,6 +113,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 		return myPostlist;
 	}
 
+	// (관리자 전용) 게시판 목록을 모두 조회 (민원/소통/공지)
 	@Override
 	public List<NoticeDTO> getAllPostsAdmin() {
 		String sql = "select * from notice order by post_date";
@@ -138,6 +140,35 @@ public class NoticeDAOImpl implements NoticeDAO {
 		}
 		
 		return boardlist;
+	}
+	
+	// (관리자 전용) 민원 게시글 목록 조회
+	@Override
+	public List<NoticeDTO> getAllPostsComplaint() {
+		String sql = "select * from notice where type = '민원' order by post_date";
+		Connection con = null;
+		PreparedStatement ptmt = null;
+		ResultSet rs = null;
+		
+		NoticeDTO notice = null;
+		
+		List<NoticeDTO> complaintList = new ArrayList<NoticeDTO>();
+		try {
+			con = DBUtil.getConnect();
+			ptmt = con.prepareStatement(sql);
+			rs = ptmt.executeQuery();
+			
+			while(rs.next()) {
+				notice = new NoticeDTO(rs.getInt(1), rs.getString(3), rs.getString(2), rs.getString(4), rs.getString(5), rs.getString(6));
+				complaintList.add(notice);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DBUtil.close(rs, ptmt, con);
+		}
+		
+		return complaintList;
 	}
 
 }

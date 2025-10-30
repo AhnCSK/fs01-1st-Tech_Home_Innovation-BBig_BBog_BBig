@@ -43,4 +43,10 @@ public class NoticeServiceImpl implements NoticeService {
 		return noticeDAO.getAllPostsAdmin();
 	}
 
+	@Override
+	public List<NoticeDTO> getComplaint() {
+		// TODO Auto-generated method stub
+		return noticeDAO.getAllPostsComplaint();
+	}
+
 }
