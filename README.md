@@ -14,7 +14,11 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 > 자바/라즈베리파이의 통신을 통한 아파트 홈 제어앱 프로젝트로 라즈베리파이 센서의 데이터를 중심으로, 전등 관리·LED ON/OFF, 커튼조작 서보모터 (ON/OFF), 부저경고음, 온/습도센서를 이용한 화재 감지, 인체 감지 센서를 통한 외출 중 침입자 감지 (사용자의 외출 설정 필요)
 > 
 
+---
+
 ## 🎥 1. 프로젝트 시연 영상
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/f0WIfpXKhSc?si=L3bDKftGnkInVL5S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
