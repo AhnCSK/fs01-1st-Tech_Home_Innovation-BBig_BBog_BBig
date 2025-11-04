@@ -73,7 +73,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 <img src="https://private-user-images.githubusercontent.com/70793831/509460467-e6b36bf2-a0cb-40b5-b776-17068854e675.webp?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjIyNTMzMDAsIm5iZiI6MTc2MjI1MzAwMCwicGF0aCI6Ii83MDc5MzgzMS81MDk0NjA0NjctZTZiMzZiZjItYTBjYi00MGI1LWI3NzYtMTcwNjg4NTRlNjc1LndlYnA_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMTA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTEwNFQxMDQzMjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kZmZlNzJiYzgyMjYwN2NhY2E2NzAyYzk2MTVlOGMwOGMwZWNiYTkyMGQ5OTY0MmNhYjY0MmFjZjExMmU5OWNiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Gp3ZEDUO1DdEpgFWOqsBgaC9MfhZUKNLFVdnyp-CP6U" width="500">
 
 
-3. 사용자 콘솔 UI (Java App)
+2. 사용자 콘솔 UI (Java App)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -121,13 +121,13 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | **기술** | MQTT (Mosquitto 등 브로커 사용) |
 | **연동** | - Raspberry Pi ↔ 브로커 (센서 publish, 제어 subscribe)<br>- Java 앱 ↔ 브로커 (제어 publish) |
 
-| 주요 토픽 예시 | 설명 |
+| 주요 토픽 + 메시지 예시 | 설명 |
 | --- | --- |
-| `/home/sensor/temperature` | 온습도 센서 값 |
-| `/home/sensor/motion` | 인체감지 센서 상태 |
-| `/home/control/led` | LED 제어 명령 |
-| `/home/control/servo` | 서보모터 제어 명령 |
-| `/home/control/buzzer` | 부저 제어 명령 |
+| `/home/warning` `Fire Outbreak` | 온습도 센서 값 |
+| `/home/warning` `Intruder Detection` | 인체감지 센서 상태 |
+| `home/201/5001/` `kitchen/led_on` | LED 제어 명령 |
+| `home/201/5001/` `room2/window_on` | 서보모터 제어 명령 |
+| `/home/warning` `security_on` | 부저 제어 명령 |
 
 ```
              │
@@ -200,7 +200,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | **문제1** |  |
 | **문제2** |  |
 | **문제3** |  |
-| **문제4** |  |  |
+| **문제4** |  |  
 | **문제5** |  |
 | **문제6** |  |
 
