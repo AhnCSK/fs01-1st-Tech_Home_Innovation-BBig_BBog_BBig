@@ -112,7 +112,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
              ▼
 ```
 
-4. MQTT 브로커 (Mosquitto 등)
+4. MQTT 브로커 (Mosquitto)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -140,9 +140,9 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | 항목 | 설명 |
 | --- | --- |
 | **역할** | 센서 데이터 수집 및 제어 장치 동작 |
-| **기능** | 센서 Publish, 제어 Subscribe, DB 저장 |
-| **기술** | Python, paho-mqtt, RPi.GPIO, MySQL Connector |
-| **연동** | - MQTT 브로커: 센서 데이터 전송 & 제어 명령 수신<br>- MySQL: 로그 저장 |
+| **기능** | 센서 Publish, 제어 Subscribe |
+| **기술** | Python, paho-mqtt, RPi.GPIO |
+| **연동** | - MQTT 브로커: 센서 데이터 전송 |
 
 | 하드웨어 구성 | 동작 설명 |
 | --- | --- |
@@ -157,11 +157,11 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
     - 비밀번호는 해시화(예: SHA-256, BCrypt 등)하여 저장
     - 성공 시, 사용자 고유 정보(세대번호 등)도 등록
 - 로그인
-    - 입력된 ID/PW → DB에서 조회 및 해시 비교
+    - 입력된 ID/PW → DB에서 조회
     - 성공 시 세션 생성 (간단한 사용자 상태 유지 가능)
     - 회원 정보 기반 기능 연동
-    - 로그인된 사용자만 제어 기능/게시판/마트 조회 가능
-    - 각 사용자별 데이터 필터링: 세대별 센서 상태, 내 구매 내역 등
+    - 로그인된 사용자만 제어 기능/입주민 게시판조회 가능
+    - 각 사용자별 데이터 필터링: 세대별 센서 정보 조회
     
 
 💡 데이터 흐름 요약
@@ -172,7 +172,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 세션 유지 |
 | **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 콘솔 출력 + DB 저장 |
 | **장치 제어** | Java 앱 → MQTT Publish → Raspberry Pi Subscribe → 제어 실행 |
-| **데이터 저장** | Raspberry Pi / Java → MySQL (로그 저장, 게시글 저장 등) |
+| **데이터 저장** | Raspberry Pi / Java → MySQL (로그 저장) |
 
 ### 🧰 기술 스택
 
@@ -182,12 +182,12 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | 사용자 인증 | Java + JDBC + MySQL (`users` 테이블) |
 | 통신 계층 | MQTT (Mosquitto 브로커) |
 | IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, smbus2, Adafruit-DHT(DHT11), Spidev, mfrc522 |
-| DB 계층 | MySQL (회원, 센서, 게시판, 구매 로그 등) |
-| MQTT 라이브러리 | Eclipse Paho (Java, Python 클라이언트 모두 지원) |
+| DB 계층 | MySQL (회원정보, 동/호수 정보, 입주민 게시판, 경고 로그) |
+| MQTT 라이브러리 | Paho |
 
 📌 구조 특징 요약
 
-✅ 로그인 기반 사용자 식별<br>✅ MQTT로 IoT 장치 실시간 제어/수신<br>✅ Java ↔ DB 연동으로 사용자 맞춤형 기능 제공<br>✅ Raspberry Pi에서 센서 상태 지속 감지 및 전송<br>✅ 보안 기능 강화 가능 (비밀번호 해시, 외출모드)
+✅ 로그인 기반 사용자 식별<br>✅ MQTT로 IoT 장치 실시간 제어/수신<br>✅ Java ↔ DB 연동으로 사용자 맞춤형 기능 제공<br>✅ Raspberry Pi에서 센서 상태 지속 감지 및 전송<br>✅ 보안 기능 강화 가능 (침입자 감지, 외출모드)
 
 
 ---
