@@ -14,9 +14,11 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 > 자바/라즈베리파이의 통신을 통한 아파트 홈 제어앱 프로젝트로 라즈베리파이 센서의 데이터를 중심으로, 전등 관리·LED ON/OFF, 커튼조작 서보모터 (ON/OFF), 부저경고음, 온/습도센서를 이용한 화재 감지, 인체 감지 센서를 통한 외출 중 침입자 감지 (사용자의 외출 설정 필요)
 > 
 
+## 🎥 1. 프로젝트 시연 영상
+
 ---
 
-## 📘 1. 프로젝트 개요
+## 📘 2. 프로젝트 개요
 
 | 항목 | 내용 |
 | --- | --- |
@@ -30,7 +32,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ---
 
-## 👥 2.팀원 및 역할
+## 👥 3.팀원 및 역할
 
 ---
 
@@ -42,7 +44,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ---
 
-## 🗓️ 3. 프로젝트 일정
+## 🗓️ 4. 프로젝트 일정
 
 | 작업 항목 | 시작 날짜 | 종료 날짜 | 기간(일) |
 | --- | --- | --- | --- |
@@ -59,13 +61,14 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ---
 
-## 🏗 4. 시스템 아키텍처
+## 🏗 5. 시스템 아키텍처
+
+1. 테이블 구조도
+
+<img src="https://private-user-images.githubusercontent.com/70793831/509460467-e6b36bf2-a0cb-40b5-b776-17068854e675.webp?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjIyNTMzMDAsIm5iZiI6MTc2MjI1MzAwMCwicGF0aCI6Ii83MDc5MzgzMS81MDk0NjA0NjctZTZiMzZiZjItYTBjYi00MGI1LWI3NzYtMTcwNjg4NTRlNjc1LndlYnA_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMTA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTEwNFQxMDQzMjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kZmZlNzJiYzgyMjYwN2NhY2E2NzAyYzk2MTVlOGMwOGMwZWNiYTkyMGQ5OTY0MmNhYjY0MmFjZjExMmU5OWNiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Gp3ZEDUO1DdEpgFWOqsBgaC9MfhZUKNLFVdnyp-CP6U" width="500">
 
 
-<img src="[이미지주소](https://private-user-images.githubusercontent.com/70793831/509460467-e6b36bf2-a0cb-40b5-b776-17068854e675.webp?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjIyNTMzMDAsIm5iZiI6MTc2MjI1MzAwMCwicGF0aCI6Ii83MDc5MzgzMS81MDk0NjA0NjctZTZiMzZiZjItYTBjYi00MGI1LWI3NzYtMTcwNjg4NTRlNjc1LndlYnA_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMTA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTEwNFQxMDQzMjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kZmZlNzJiYzgyMjYwN2NhY2E2NzAyYzk2MTVlOGMwOGMwZWNiYTkyMGQ5OTY0MmNhYjY0MmFjZjExMmU5OWNiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Gp3ZEDUO1DdEpgFWOqsBgaC9MfhZUKNLFVdnyp-CP6U)" width="500">
-
-
-1. 사용자 콘솔 UI (Java App)
+3. 사용자 콘솔 UI (Java App)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -81,7 +84,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
             ▼
 ```
 
-2. 데이터베이스 (MySQL)
+3. 데이터베이스 (MySQL)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -104,7 +107,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
              ▼
 ```
 
-3. MQTT 브로커 (Mosquitto 등)
+4. MQTT 브로커 (Mosquitto 등)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -127,7 +130,7 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
              ▼
 ```
 
-4. Raspberry Pi (Python)
+5. Raspberry Pi (Python)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -184,9 +187,8 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ---
 
----
 
-## ⚠️ 4. 문제 및 해결 방안
+## ⚠️ 6. 문제 및 해결 방안
 
 | 문제 | 원인 | 해결 방안 |
 | --- | --- | --- |
@@ -197,11 +199,14 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | **문제5** |  |
 | **문제6** |  |
 
----
 
 ---
 
-## 🧾 5. 참고문서
+## ⚠️ 7.최종결과 및 개선필요점
+
+---
+
+## 🧾 8. 참고문서
 
 - https://koreascience.kr/article/JAKO201532742223692.pdf
 - https://wnsgml972.github.io/mqtt/2018/03/05/mqtt/
