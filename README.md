@@ -20,7 +20,8 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 <img width="1215" height="547" alt="you" src="https://github.com/user-attachments/assets/37c76f79-ed89-4c6e-be3a-0ba4e540d0ed" />
 
-[![영상 제목](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=f0WIfpXKhSc&t=1s)
+[![영상 보기](https://github.com/user-attachments/assets/37c76f79-ed89-4c6e-be3a-0ba4e540d0ed)](https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://youtu.be/f0WIfpXKhSc?si=OiSU5ED7FPzZP7mc)
+
 
 ---
 
