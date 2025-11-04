@@ -36,9 +36,9 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 | 이름 | 역할 및 담당 업무 | 개인 Git |
 | --- | --- | --- |
-|  ** 이다온 **  | • 콘솔 로그인/회원가입 백엔드 • DB 설계 및 디자인 • 자바 MQTT통신 • 커뮤니티 게시판 • 센서 조작기능  | [GitHub](https://github.com/DaOn1072) |
-|  ** 노건우 **  | • 라즈베리파이 모듈 설계 및 구축 • Python 소스코드 전체 작업 • Python MQTT 통신구현 • IOT구조물 설계 • 하드웨어 아키텍쳐 설계 | [GitHub](https://github.com/geonwoo1226) |
-|  ** 안창석 **  | • 자바 MQTT통신구현 • 결과 발표 • 깃허브구축 및 설계 | [GitHub](https://github.com/AhnCSK) |
+|  **이다온**  | • 콘솔 로그인/회원가입 백엔드 • DB 설계 및 디자인 • 자바 MQTT통신 • 커뮤니티 게시판 • 센서 조작기능  | [GitHub](https://github.com/DaOn1072) |
+|  **노건우**  | • 라즈베리파이 모듈 설계 및 구축 • Python 소스코드 전체 작업 • Python MQTT 통신구현 • IOT구조물 설계 • 하드웨어 아키텍쳐 설계 | [GitHub](https://github.com/geonwoo1226) |
+|  **안창석**  | • 자바 MQTT통신구현 • 결과 발표 • 깃허브구축 및 설계 | [GitHub](https://github.com/AhnCSK) |
 
 ---
 
