@@ -68,43 +68,39 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ## 🏗 5. 시스템 아키텍처
 
-1. 테이블 구조도
-
-<img src="https://private-user-images.githubusercontent.com/70793831/509460467-e6b36bf2-a0cb-40b5-b776-17068854e675.webp?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjIyNTMzMDAsIm5iZiI6MTc2MjI1MzAwMCwicGF0aCI6Ii83MDc5MzgzMS81MDk0NjA0NjctZTZiMzZiZjItYTBjYi00MGI1LWI3NzYtMTcwNjg4NTRlNjc1LndlYnA_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMTA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTEwNFQxMDQzMjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kZmZlNzJiYzgyMjYwN2NhY2E2NzAyYzk2MTVlOGMwOGMwZWNiYTkyMGQ5OTY0MmNhYjY0MmFjZjExMmU5OWNiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Gp3ZEDUO1DdEpgFWOqsBgaC9MfhZUKNLFVdnyp-CP6U" width="500">
-
-
-2. 사용자 콘솔 UI (Java App)
+1. 사용자 콘솔 UI (Java App)
 
 | 항목 | 설명 |
 | --- | --- |
 | **역할** | 사용자 인터페이스 제공 |
-| **기능** | 로그인/회원가입, 센서 조회, 제어 명령, 커뮤니티, 마트 확인 등 |
-| **기술** | Java (Swing 또는 JavaFX), JDBC |
+| **기능** | 로그인/회원가입, 센서 조회, 제어 명령, 아파트 커뮤니티 게시판 조회 |
+| **기술** | Java , JDBC |
 | **연동** | - MySQL DB (회원 정보, 데이터 조회)<br>- MQTT 브로커 (제어 명령 송신) |
 
 ```
             │
- [1] JDBC 요청 (회원 정보, 데이터 조회)
+ [1] JDBC 요청 (회원 정보, 커뮤니티 글 조회)
             │
             ▼
 ```
 
-3. 데이터베이스 (MySQL)
+2. 데이터베이스 (MySQL)
 
 | 항목 | 설명 |
 | --- | --- |
 | **역할** | 시스템 전체 데이터 저장 및 조회 |
-| **기능** | 회원, 센서로그, 제어기록, 게시판, 마트주문 정보 저장 |
+| **기능** | 회원정보, 센서로그, 호수정보, 게시판 내용 저장 |
 | **기술** | MySQL |
-| **연동** | - Java 앱과 JDBC로 연결<br>- Raspberry Pi에서 센서 및 제어 로그 저장 |
+| **연동** | - Java 앱과 JDBC로 연결<br>- Raspberry Pi에서 온 센서 로그 저장 |
+
+![image](https://github.com/user-attachments/assets/2300d73a-fbc8-4fdb-901e-7a8eae60c58c)
 
 | 주요 테이블 | 설명 |
 | --- | --- |
-| `users` | 사용자 ID, 비밀번호 hash, 세대 정보 등 |
-| `sensor_logs` | 온도, 움직임 등 센서 로그 |
-| `controls` | 제어 이력 (LED, 문 등) |
-| `posts` | 커뮤니티 게시판 글 |
-| `mart_orders` | 마트 구매 내역 |
+| `user` | 사용자 ID, 비밀번호 |
+| `sensor` | 온도, 움직임 등 센서 로그 |
+| `warning` | 커뮤니티 게시판 글 |
+| `room` | 세대 정보 |
 
 ```
              │
@@ -112,13 +108,13 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
              ▼
 ```
 
-4. MQTT 브로커 (Mosquitto)
+3. MQTT 브로커 (Mosquitto)
 
 | 항목 | 설명 |
 | --- | --- |
 | **역할** | 센서 데이터 송신 및 제어 명령 중계 |
 | **기능** | MQTT 프로토콜을 통해 메시지 송수신 |
-| **기술** | MQTT (Mosquitto 등 브로커 사용) |
+| **기술** | MQTT (Mosquitto 브로커 사용) |
 | **연동** | - Raspberry Pi ↔ 브로커 (센서 publish, 제어 subscribe)<br>- Java 앱 ↔ 브로커 (제어 publish) |
 
 | 주요 토픽 + 메시지 예시 | 설명 |
@@ -131,11 +127,11 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 
 ```
              │
-    [3] MQTT 메시지 처리
+    [3] MQTT 메시지 송/수신
              ▼
 ```
 
-5. Raspberry Pi (Python)
+4. Raspberry Pi (Python)
 
 | 항목 | 설명 |
 | --- | --- |
@@ -153,9 +149,8 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 🔐 로그인 / 회원가입 플로우
 
 - 회원가입
-    - 사용자가 콘솔 앱에서 ID, 비밀번호 입력 → Java 앱에서 DB로 전송
-    - 비밀번호는 해시화(예: SHA-256, BCrypt 등)하여 저장
-    - 성공 시, 사용자 고유 정보(세대번호 등)도 등록
+    - 사용자가 콘솔 앱에서 회원가입기능을 선택
+    - ID, 비밀번호 입력, 사용자 고유 정보(세대번호 등)도 등록 → Java 앱에서 DB로 전송
 - 로그인
     - 입력된 ID/PW → DB에서 조회
     - 성공 시 세션 생성 (간단한 사용자 상태 유지 가능)
@@ -169,10 +164,10 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | 기능 | 흐름 |
 | --- | --- |
 | **회원가입** | Java 앱 → JDBC → DB `users` 테이블 |
-| **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 세션 유지 |
-| **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 콘솔 출력 + DB 저장 |
+| **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 로그인 유지 |
+| **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 팝업 알림 출력 |
 | **장치 제어** | Java 앱 → MQTT Publish → Raspberry Pi Subscribe → 제어 실행 |
-| **데이터 저장** | Raspberry Pi / Java → MySQL (로그 저장) |
+| **센서 데이터 저장** | Raspberry Pi → MQTT Publish → Java App Subscribe → 콘솔 출력 + DB 저장 |
 
 ### 🧰 기술 스택
 
@@ -181,8 +176,8 @@ JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs
 | UI (사용자 콘솔) | Java 콘솔 앱 |
 | 사용자 인증 | Java + JDBC + MySQL (`users` 테이블) |
 | 통신 계층 | MQTT (Mosquitto 브로커) |
-| IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, smbus2, Adafruit-DHT(DHT11), Spidev, mfrc522 |
-| DB 계층 | MySQL (회원정보, 동/호수 정보, 입주민 게시판, 경고 로그) |
+| IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, Adafruit-DHT(DHT11) |
+| DB 계층 | MySQL (회원정보, 세개별 정보, 입주민 게시판, 경고 로그) |
 | MQTT 라이브러리 | Paho |
 
 📌 구조 특징 요약
