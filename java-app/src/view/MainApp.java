@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
-import Controller.MainController;
+import controller.MainController;
 import dao.UserDAOImpl;
 import service.AdminService;
 import service.AdminServiceImpl;

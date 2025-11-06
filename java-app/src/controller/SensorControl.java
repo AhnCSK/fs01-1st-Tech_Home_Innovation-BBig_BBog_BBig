@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import dto.UserDTO;
 import mqtt.MqttPubSubService;
