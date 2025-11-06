@@ -1,11 +1,3 @@
-# 주제 : 스마트 홈 제어 시스템 구축
-
-JDBC와 파이썬을 이용한 라즈베리파이 구축 및 MQTT통신
-
-JDBC를 포함한 자바 소스코드 전체 : https://github.com/geonwoo1226/fs01-1st-Tech_Home_Innovation-BBig_BBog_BBig.git
-
-라즈베리파이 관련 파이썬 소스코드 전체 : https://github.com/geonwoo1226/NOVA_first_project.git
-
 # 테크 홈 이노베이션 - 삑뽁삑(BBig BBog BBig)
 
 > 아파트 정보/입주민 게시판조회가능한 실시간 통합 안전관리 스마트홈 시스템
