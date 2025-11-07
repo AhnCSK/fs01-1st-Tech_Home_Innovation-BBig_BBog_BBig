@@ -34,7 +34,7 @@
 
 | 이름 | 역할 및 담당 업무 | 개인 Git |
 | --- | --- | --- |
-| **이다온** | 콘솔 로그인/회원가입 백엔드DB 설계 및 디자인<br>자바 MQTT통신<br>커뮤니티 게시판<br>센서 조작기능 | [GitHub](https://github.com/DaOn1072) |
+| **이다온** | 콘솔UI 구현<br>백엔드 DB 설계 및 디자인<br>자바 MQTT통신<br>DAO/DTO 기반 데이터 구조를 설계<br>Java 콘솔 UI와 Raspberry Pi 센서 제어 연동 | [GitHub](https://github.com/DaOn1072) |
 | **노건우** | 라즈베리파이 모듈 기능구현<br>Python MQTT 통신구현<br>하드웨어 아키텍처 설계<br>IoT구조물 설계 | [GitHub](https://github.com/geonwoo1226) |
 | **안창석** | 자바 MQTT통신구현<br>결과 발표<br>깃허브구축 | [GitHub](https://github.com/AhnCSK) |
 
@@ -81,7 +81,7 @@
 
 | 기능 | 흐름 |
 | --- | --- |
-| **회원가입** | Java 앱 → JDBC → DB `users` 테이블 |
+| **회원가입** | Java 앱 → JDBC → DB `user` 테이블 |
 | **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 로그인 유지 |
 | **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 팝업 알림 출력 |
 | **장치 제어** | Java 앱 → MQTT Publish → Raspberry Pi Subscribe → 제어 실행 |
@@ -92,7 +92,7 @@
 | 계층 | 기술 / 도구 |
 | --- | --- |
 | UI (사용자 콘솔) | Java 콘솔 앱 |
-| 사용자 인증 | Java + JDBC + MySQL (`users` 테이블) |
+| 사용자 인증 | Java + JDBC + MySQL (`user` 테이블) |
 | 통신 계층 | MQTT (Mosquitto 브로커) |
 | IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, Adafruit-DHT(DHT11) |
 | DB 계층 | MySQL (회원정보, 세개별 정보, 입주민 게시판, 경고 로그) |
@@ -128,10 +128,10 @@
 
 | 주요 테이블 | 설명 |
 | --- | --- |
-| `user` | 사용자 ID, 비밀번호 |
-| `sensor` | 온도, 움직임 등 센서 로그 |
-| `warning` | 커뮤니티 게시판 글 |
-| `room` | 세대 정보 |
+| `user` | 사용자ID, 비밀번호, 사용자 기본 정보 |
+| `notice` | 아파트 커뮤니티 게시판 글 |
+| `warning` | 침입자/화재 감지 기록 |
+| `room` | 아파트 동/호수 정보 |
 
 ```
              │
