@@ -60,9 +60,43 @@
 
 ## 🏗 5. 시스템 아키텍처
 
-📌 시스템 구조 요약
+📌 시스템 구성 요약
 
 ✅ 로그인 기반 사용자 식별<br>✅ MQTT로 IoT 장치 실시간 제어/수신<br>✅ Java ↔ DB 연동으로 사용자 맞춤형 기능 제공<br>✅ Raspberry Pi에서 센서 상태 지속 감지 및 전송<br>✅ 보안 기능 강화 가능 (침입자 감지, 외출모드)
+
+🔐 로그인 / 회원가입 흐름
+
+- 회원가입
+    - 사용자가 콘솔 앱에서 회원가입기능을 선택
+    - ID, 비밀번호 입력, 사용자 고유 정보(세대번호 등)도 등록 → Java 앱에서 DB로 전송
+- 로그인
+    - 입력된 ID/PW → DB에서 조회
+    - 성공 시 세션 생성 (간단한 사용자 상태 유지 가능)
+    - 회원 정보 기반 기능 연동
+    - 로그인된 사용자만 제어 기능/입주민 게시판조회 가능
+    - 각 사용자별 데이터 필터링: 세대별 센서 정보 조회
+    
+
+💡 데이터 흐름 요약
+
+| 기능 | 흐름 |
+| --- | --- |
+| **회원가입** | Java 앱 → JDBC → DB `users` 테이블 |
+| **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 로그인 유지 |
+| **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 팝업 알림 출력 |
+| **장치 제어** | Java 앱 → MQTT Publish → Raspberry Pi Subscribe → 제어 실행 |
+| **센서 데이터 저장** | Raspberry Pi → MQTT Publish → Java App Subscribe → 콘솔 출력 + DB 저장 |
+
+### 🧰 사용 기술
+
+| 계층 | 기술 / 도구 |
+| --- | --- |
+| UI (사용자 콘솔) | Java 콘솔 앱 |
+| 사용자 인증 | Java + JDBC + MySQL (`users` 테이블) |
+| 통신 계층 | MQTT (Mosquitto 브로커) |
+| IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, Adafruit-DHT(DHT11) |
+| DB 계층 | MySQL (회원정보, 세개별 정보, 입주민 게시판, 경고 로그) |
+| MQTT 라이브러리 | Paho |
 
 
 1. 사용자 콘솔 UI (Java App)
@@ -142,40 +176,6 @@
 | 온습도 센서 | 온도/습도 측정 → MQTT Publish |
 | PIR 센서 | 움직임 감지 → MQTT Publish |
 | LED, 서보, 부저 | MQTT 수신 시 GPIO로 제어 |
-
-🔐 로그인 / 회원가입 플로우
-
-- 회원가입
-    - 사용자가 콘솔 앱에서 회원가입기능을 선택
-    - ID, 비밀번호 입력, 사용자 고유 정보(세대번호 등)도 등록 → Java 앱에서 DB로 전송
-- 로그인
-    - 입력된 ID/PW → DB에서 조회
-    - 성공 시 세션 생성 (간단한 사용자 상태 유지 가능)
-    - 회원 정보 기반 기능 연동
-    - 로그인된 사용자만 제어 기능/입주민 게시판조회 가능
-    - 각 사용자별 데이터 필터링: 세대별 센서 정보 조회
-    
-
-💡 데이터 흐름 요약
-
-| 기능 | 흐름 |
-| --- | --- |
-| **회원가입** | Java 앱 → JDBC → DB `users` 테이블 |
-| **로그인** | Java 앱 → DB 비밀번호 검증 → 성공 시 사용자 로그인 유지 |
-| **센서 이벤트 감지** | Raspberry Pi → MQTT Publish → Java App Subscribe → 팝업 알림 출력 |
-| **장치 제어** | Java 앱 → MQTT Publish → Raspberry Pi Subscribe → 제어 실행 |
-| **센서 데이터 저장** | Raspberry Pi → MQTT Publish → Java App Subscribe → 콘솔 출력 + DB 저장 |
-
-### 🧰 기술 스택
-
-| 계층 | 기술 / 도구 |
-| --- | --- |
-| UI (사용자 콘솔) | Java 콘솔 앱 |
-| 사용자 인증 | Java + JDBC + MySQL (`users` 테이블) |
-| 통신 계층 | MQTT (Mosquitto 브로커) |
-| IoT 제어 | 사용모델 및 언어 : Raspberry Pi + Python<br>사용 라이브러리 : GPIO, Adafruit-DHT(DHT11) |
-| DB 계층 | MySQL (회원정보, 세개별 정보, 입주민 게시판, 경고 로그) |
-| MQTT 라이브러리 | Paho |
 
 
 ---
